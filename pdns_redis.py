@@ -221,12 +221,15 @@ class QueryOp(Task):
     self.domain = domain and domain.lower() or None
     self.record = record and record.upper() or None
     self.data = data
+  
+  def _readonly(self):
+    return self.redis_pdns.redis_write_host is None
 
   def BE(self):
-    return self.redis_pdns.BE()
-  
-  def readonly(self):
-    return self.redis_pdns.redis_write_host is None
+    if self._readonly():
+      return self.redis_pdns.BE()
+    else:
+      return self.redis_pdns.WBE()
 
   def DSplit(self, domain, count=1024):
     return domain.split('.', count)
@@ -248,7 +251,7 @@ class QueryOp(Task):
       key = "\t".join([self.record, self.data])
       ttl = pdns_be.hget(pdns_key, key)
       if ttl is not None:
-        if not self.readonly():
+        if not self._readonly():
           pdns_be.hincrby(pdns_key, 'TXT\tQC', 1)
         return [(self.domain, self.record, ttl, self.data)]
       elif wildcards:
@@ -277,7 +280,7 @@ class QueryOp(Task):
         rv.append((self.domain, record, ddata[entry], data))
 
     if rv:
-      if not self.readonly():
+      if not self._readonly():
         pdns_be.hincrby(pdns_key, 'TXT\tQC', 1)
       return rv
     elif wildcards:
