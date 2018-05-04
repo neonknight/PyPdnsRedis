@@ -522,7 +522,7 @@ class PdnsChatter(Task):
           self.FlushLogBuffer()
           self.reply("LOG\tPowerDNS sent bad request: %s" % query)
           self.reply("FAIL")
-      except Exception, err:
+      except Exception as err:
         self.redis_pdns.Disconnect()
         self.FlushLogBuffer()
         self.reply("LOG\tInternal Error: %s" % err)
@@ -666,8 +666,8 @@ class PdnsRedis(object):
 if __name__ == '__main__':
   try:
     pr = PdnsRedis().ParseArgs(sys.argv[1:]).RunTasks()
-  except ArgumentError, e:
-    print DOC
-    print 'Error: %s' % e
+  except ArgumentError as e:
+    print(DOC)
+    print('Error: %s' % e)
     sys.exit(1)
 
