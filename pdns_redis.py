@@ -31,8 +31,8 @@ Usage: pdns-redis.py [-R <host:port>] [-i <db-id>] [-A <password-file>] [-P]
 
 Flags:
 
-  -R <host:port>     Set the Redis back-end.
-  -W <host:port>     Set the Redis back-end for writes.
+  -R <host:port>     Set the Redis back-end (read only).
+  -W <host:port>     Set the Redis back-end for writes (query count updates and record alterations).
   -i <db-id>         Set the Redis DB ID (defaults to 0)
   -A <password-file> Read a Redis password from the named file.
   -P                 Run as a PowerDNS pipe-backend.
